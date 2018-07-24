@@ -1,3 +1,5 @@
+// APP.JS contains basic configuration
+
 var express = require('express');
 var app = express();
 var db = require('./db');
