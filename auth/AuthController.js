@@ -17,3 +17,19 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended : true }));
 
 var User = require('../user/User');
+
+
+
+// Register route
+router.post('/register', function(request, response){
+
+    try{
+        var hashedPassword = bcrypt.hashSync(request.body.password, 8);
+    } catch(IllegalArgumentsException){
+        
+    }
+    response.send(hashedPassword);
+
+});
+
+module.exports = router;
