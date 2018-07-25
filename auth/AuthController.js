@@ -33,7 +33,9 @@ router.post('/register', function(request, response){
         // 3.1 hashSync takes the password to hash, plus a salt length.
         var hashedPassword = bcrypt.hashSync(request.body.password, 8);
     } catch(IllegalArgumentsException){
-        response.status().send();
+        response
+        .status(httpStatus.client.BAD_REQUEST)
+        .send("BAD REQUEST: Server recieved a password which was null or undefined.");
     }
     
 
