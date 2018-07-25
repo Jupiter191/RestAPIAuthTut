@@ -29,14 +29,49 @@ var User = require('../user/User');
 router.post('/register', function(request, response){
 
     // This try/catch is my own addition. It is not part of the tutorial.
+    var hashedPassword;
     try{
         // 3.1 hashSync takes the password to hash, plus a salt length.
-        var hashedPassword = bcrypt.hashSync(request.body.password, 8);
+        hashedPassword = bcrypt.hashSync(request.body.password, 8);
+
     } catch(IllegalArgumentsException){
         response
         .status(httpStatus.client.BAD_REQUEST)
         .send("BAD REQUEST: Server recieved a password which was null or undefined.");
     }
+
+    // 3.2 Use our mongodb model to attempt to create a new user. Create function
+    //     takes an object with the properties of the new user and a callback
+    //     that takes an error and the new user (if one was created).
+    User.create({
+        name: request.body.name,
+        email: request.body.email,
+        password: hashedPassword
+    },
+    function(err, user){
+        if(err){
+            response
+            .status(httpStatus.server.INTERNAL_SERVER_ERROR)
+            .send("Unable to add new user to the database.");
+        
+        } else {
+            var token = jwt.sign(
+                {id: user._id},
+                config.secret,
+                {
+                    expiresIn: 60*60*1000 // One hour
+                }
+            );
+
+            response
+            .status(httpStatus.success.OK)
+            .send({
+                auth: true,
+                token: token
+            });
+
+        }
+    });
     
 
 });
