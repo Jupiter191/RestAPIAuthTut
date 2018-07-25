@@ -55,6 +55,9 @@ router.post('/register', function(request, response){
             .send("Unable to add new user to the database.");
         
         } else {
+            
+            // 3.3 If an error hasn't been generated, the user is added
+            //     and a token is generated and sent to that user.
             var token = jwt.sign(
                 {id: user._id},
                 config.secret,
@@ -72,8 +75,17 @@ router.post('/register', function(request, response){
 
         }
     });
+
+
+
+    router.get('/me', function(request, response){
+        
+    });
     
 
 });
+
+
+
 
 module.exports = router;
